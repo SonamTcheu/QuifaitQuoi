@@ -1,3 +1,4 @@
 module.exports = {
-  hello: require('./hello')
+  bienvenu: require('./bienvenu'),
+  search: require('search')
 };

@@ -1,7 +1,3 @@
-/*-----------------------------------------------------------------------------
-A simple echo bot for the Microsoft Bot Framework. 
------------------------------------------------------------------------------*/
-
 var restify = require('restify');
 var builder = require('botbuilder');
 
@@ -22,18 +18,12 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users 
 server.post('/api/messages', connector.listen());
 
-/*----------------------------------------------------------------------------------------
-* Bot Storage: This is a great spot to register the private state storage for your bot. 
-* We provide adapters for Azure Table, CosmosDb, SQL Azure, or you can implement your own!
-* For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
-* ---------------------------------------------------------------------------------------- */
-
 // Create your bot with a function to receive messages from the user
 var bot = new builder.UniversalBot(connector);
 
 // Make sure you add code to validate these fields
-var luisAppId = process.env.LuisAppId;
-var luisAPIKey = process.env.LuisAPIKey;
+var luisAppId = process.env.LuisAppId; //68b76f1f-0299-4436-9e5a-e5bdc8ee8d5f
+var luisAPIKey = process.env.LuisAPIKey; //
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
 
 const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v1/application?id=' + luisAppId + '&subscription-key=' + luisAPIKey;
@@ -44,13 +34,33 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 /*
 .matches('<yourIntent>')... See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
 */
-.onDefault((session) => {
-    session.send('Sorry, I did not understand \'%s\'.', session.message.text);
-});
 
-bot.dialog('/', intents); 
-bot.dialog('/hello', dialogs.help);   
+bot.dialog('/', intents);
+bot.dialog('/bienvenu', dialogs.bienvenu);
+bot.dialog('/search', dialogs.search);
 
 bot.dialog('/none', function (session, args, next) { 
     session.endDialog(none);
- });
+})
+
+//All intents
+intents.onBegin(function (session, args, next) {
+    next();
+})
+.matches('bienvenu', function (session, args, next){
+    if(args && args.score > 0.6)
+    { 
+        session.beginDialog('/bienvenu',args, next);
+    }
+    else{ session.endDialog();}
+})
+.matches('search', function (session, args, next){   
+    if(args && args.score > 0.6)
+    { 
+        session.beginDialog('/search');
+    }
+    else{ session.endDialog();}
+})
+.onDefault((session) => {
+    session.send('Sorry, I did not understand \'%s\'.', session.message.text);
+});
