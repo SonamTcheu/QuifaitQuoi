@@ -48,5 +48,9 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     session.send('Sorry, I did not understand \'%s\'.', session.message.text);
 });
 
-bot.dialog('/', intents);    
+bot.dialog('/', intents); 
+bot.dialog('/hello', dialogs.help);   
 
+bot.dialog('/none', function (session, args, next) { 
+    session.endDialog(none);
+ });
