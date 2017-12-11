@@ -22,8 +22,8 @@ server.post('/api/messages', connector.listen());
 var bot = new builder.UniversalBot(connector);
 
 // Make sure you add code to validate these fields
-var luisAppId = process.env.LuisAppId; //68b76f1f-0299-4436-9e5a-e5bdc8ee8d5f
-var luisAPIKey = process.env.LuisAPIKey; //
+var luisAppId = process.env.LuisAppId; 
+var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
 
 const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v1/application?id=' + luisAppId + '&subscription-key=' + luisAPIKey;
@@ -31,9 +31,6 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v1/application?id=' +
 // Main dialog with LUIS
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
-/*
-.matches('<yourIntent>')... See details at http://docs.botframework.com/builder/node/guides/understanding-natural-language/
-*/
 
 bot.dialog('/', intents);
 bot.dialog('/bienvenu', dialogs.bienvenu);
@@ -62,5 +59,5 @@ intents.onBegin(function (session, args, next) {
     else{ session.endDialog();}
 })
 .onDefault((session) => {
-    session.send('Sorry, I did not understand \'%s\'.', session.message.text);
+    session.send('Désoles, je ne comprends votre question \'%s\'.', session.message.text);
 });
